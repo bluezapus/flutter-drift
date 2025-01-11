@@ -17,10 +17,10 @@ class $Bz_fileTable extends Bz_file with TableInfo<$Bz_fileTable, Bz_fileData> {
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _usernameMeta =
-      const VerificationMeta('username');
+  static const VerificationMeta _filenameMeta =
+      const VerificationMeta('filename');
   @override
-  late final GeneratedColumn<String> username = GeneratedColumn<String>(
+  late final GeneratedColumn<String> filename = GeneratedColumn<String>(
       'file_name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _authorMeta = const VerificationMeta('author');
@@ -41,7 +41,7 @@ class $Bz_fileTable extends Bz_file with TableInfo<$Bz_fileTable, Bz_fileData> {
       type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, username, author, dateofCreate, fill];
+      [id, filename, author, dateofCreate, fill];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -56,10 +56,10 @@ class $Bz_fileTable extends Bz_file with TableInfo<$Bz_fileTable, Bz_fileData> {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('file_name')) {
-      context.handle(_usernameMeta,
-          username.isAcceptableOrUnknown(data['file_name']!, _usernameMeta));
+      context.handle(_filenameMeta,
+          filename.isAcceptableOrUnknown(data['file_name']!, _filenameMeta));
     } else if (isInserting) {
-      context.missing(_usernameMeta);
+      context.missing(_filenameMeta);
     }
     if (data.containsKey('author')) {
       context.handle(_authorMeta,
@@ -92,7 +92,7 @@ class $Bz_fileTable extends Bz_file with TableInfo<$Bz_fileTable, Bz_fileData> {
     return Bz_fileData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      username: attachedDatabase.typeMapping
+      filename: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}file_name'])!,
       author: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}author'])!,
@@ -111,13 +111,13 @@ class $Bz_fileTable extends Bz_file with TableInfo<$Bz_fileTable, Bz_fileData> {
 
 class Bz_fileData extends DataClass implements Insertable<Bz_fileData> {
   final int id;
-  final String username;
+  final String filename;
   final String author;
   final DateTime dateofCreate;
   final String fill;
   const Bz_fileData(
       {required this.id,
-      required this.username,
+      required this.filename,
       required this.author,
       required this.dateofCreate,
       required this.fill});
@@ -125,7 +125,7 @@ class Bz_fileData extends DataClass implements Insertable<Bz_fileData> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['file_name'] = Variable<String>(username);
+    map['file_name'] = Variable<String>(filename);
     map['author'] = Variable<String>(author);
     map['datepfCreate'] = Variable<DateTime>(dateofCreate);
     map['fill'] = Variable<String>(fill);
@@ -135,7 +135,7 @@ class Bz_fileData extends DataClass implements Insertable<Bz_fileData> {
   Bz_fileCompanion toCompanion(bool nullToAbsent) {
     return Bz_fileCompanion(
       id: Value(id),
-      username: Value(username),
+      filename: Value(filename),
       author: Value(author),
       dateofCreate: Value(dateofCreate),
       fill: Value(fill),
@@ -147,7 +147,7 @@ class Bz_fileData extends DataClass implements Insertable<Bz_fileData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Bz_fileData(
       id: serializer.fromJson<int>(json['id']),
-      username: serializer.fromJson<String>(json['username']),
+      filename: serializer.fromJson<String>(json['filename']),
       author: serializer.fromJson<String>(json['author']),
       dateofCreate: serializer.fromJson<DateTime>(json['dateofCreate']),
       fill: serializer.fromJson<String>(json['fill']),
@@ -158,7 +158,7 @@ class Bz_fileData extends DataClass implements Insertable<Bz_fileData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'username': serializer.toJson<String>(username),
+      'filename': serializer.toJson<String>(filename),
       'author': serializer.toJson<String>(author),
       'dateofCreate': serializer.toJson<DateTime>(dateofCreate),
       'fill': serializer.toJson<String>(fill),
@@ -167,13 +167,13 @@ class Bz_fileData extends DataClass implements Insertable<Bz_fileData> {
 
   Bz_fileData copyWith(
           {int? id,
-          String? username,
+          String? filename,
           String? author,
           DateTime? dateofCreate,
           String? fill}) =>
       Bz_fileData(
         id: id ?? this.id,
-        username: username ?? this.username,
+        filename: filename ?? this.filename,
         author: author ?? this.author,
         dateofCreate: dateofCreate ?? this.dateofCreate,
         fill: fill ?? this.fill,
@@ -181,7 +181,7 @@ class Bz_fileData extends DataClass implements Insertable<Bz_fileData> {
   Bz_fileData copyWithCompanion(Bz_fileCompanion data) {
     return Bz_fileData(
       id: data.id.present ? data.id.value : this.id,
-      username: data.username.present ? data.username.value : this.username,
+      filename: data.filename.present ? data.filename.value : this.filename,
       author: data.author.present ? data.author.value : this.author,
       dateofCreate: data.dateofCreate.present
           ? data.dateofCreate.value
@@ -194,7 +194,7 @@ class Bz_fileData extends DataClass implements Insertable<Bz_fileData> {
   String toString() {
     return (StringBuffer('Bz_fileData(')
           ..write('id: $id, ')
-          ..write('username: $username, ')
+          ..write('filename: $filename, ')
           ..write('author: $author, ')
           ..write('dateofCreate: $dateofCreate, ')
           ..write('fill: $fill')
@@ -203,13 +203,13 @@ class Bz_fileData extends DataClass implements Insertable<Bz_fileData> {
   }
 
   @override
-  int get hashCode => Object.hash(id, username, author, dateofCreate, fill);
+  int get hashCode => Object.hash(id, filename, author, dateofCreate, fill);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Bz_fileData &&
           other.id == this.id &&
-          other.username == this.username &&
+          other.filename == this.filename &&
           other.author == this.author &&
           other.dateofCreate == this.dateofCreate &&
           other.fill == this.fill);
@@ -217,37 +217,37 @@ class Bz_fileData extends DataClass implements Insertable<Bz_fileData> {
 
 class Bz_fileCompanion extends UpdateCompanion<Bz_fileData> {
   final Value<int> id;
-  final Value<String> username;
+  final Value<String> filename;
   final Value<String> author;
   final Value<DateTime> dateofCreate;
   final Value<String> fill;
   const Bz_fileCompanion({
     this.id = const Value.absent(),
-    this.username = const Value.absent(),
+    this.filename = const Value.absent(),
     this.author = const Value.absent(),
     this.dateofCreate = const Value.absent(),
     this.fill = const Value.absent(),
   });
   Bz_fileCompanion.insert({
     this.id = const Value.absent(),
-    required String username,
+    required String filename,
     required String author,
     required DateTime dateofCreate,
     required String fill,
-  })  : username = Value(username),
+  })  : filename = Value(filename),
         author = Value(author),
         dateofCreate = Value(dateofCreate),
         fill = Value(fill);
   static Insertable<Bz_fileData> custom({
     Expression<int>? id,
-    Expression<String>? username,
+    Expression<String>? filename,
     Expression<String>? author,
     Expression<DateTime>? dateofCreate,
     Expression<String>? fill,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (username != null) 'file_name': username,
+      if (filename != null) 'file_name': filename,
       if (author != null) 'author': author,
       if (dateofCreate != null) 'datepfCreate': dateofCreate,
       if (fill != null) 'fill': fill,
@@ -256,13 +256,13 @@ class Bz_fileCompanion extends UpdateCompanion<Bz_fileData> {
 
   Bz_fileCompanion copyWith(
       {Value<int>? id,
-      Value<String>? username,
+      Value<String>? filename,
       Value<String>? author,
       Value<DateTime>? dateofCreate,
       Value<String>? fill}) {
     return Bz_fileCompanion(
       id: id ?? this.id,
-      username: username ?? this.username,
+      filename: filename ?? this.filename,
       author: author ?? this.author,
       dateofCreate: dateofCreate ?? this.dateofCreate,
       fill: fill ?? this.fill,
@@ -275,8 +275,8 @@ class Bz_fileCompanion extends UpdateCompanion<Bz_fileData> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (username.present) {
-      map['file_name'] = Variable<String>(username.value);
+    if (filename.present) {
+      map['file_name'] = Variable<String>(filename.value);
     }
     if (author.present) {
       map['author'] = Variable<String>(author.value);
@@ -294,7 +294,7 @@ class Bz_fileCompanion extends UpdateCompanion<Bz_fileData> {
   String toString() {
     return (StringBuffer('Bz_fileCompanion(')
           ..write('id: $id, ')
-          ..write('username: $username, ')
+          ..write('filename: $filename, ')
           ..write('author: $author, ')
           ..write('dateofCreate: $dateofCreate, ')
           ..write('fill: $fill')
@@ -316,14 +316,14 @@ abstract class _$AppDb extends GeneratedDatabase {
 
 typedef $$Bz_fileTableCreateCompanionBuilder = Bz_fileCompanion Function({
   Value<int> id,
-  required String username,
+  required String filename,
   required String author,
   required DateTime dateofCreate,
   required String fill,
 });
 typedef $$Bz_fileTableUpdateCompanionBuilder = Bz_fileCompanion Function({
   Value<int> id,
-  Value<String> username,
+  Value<String> filename,
   Value<String> author,
   Value<DateTime> dateofCreate,
   Value<String> fill,
@@ -340,8 +340,8 @@ class $$Bz_fileTableFilterComposer extends Composer<_$AppDb, $Bz_fileTable> {
   ColumnFilters<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get username => $composableBuilder(
-      column: $table.username, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get filename => $composableBuilder(
+      column: $table.filename, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get author => $composableBuilder(
       column: $table.author, builder: (column) => ColumnFilters(column));
@@ -364,8 +364,8 @@ class $$Bz_fileTableOrderingComposer extends Composer<_$AppDb, $Bz_fileTable> {
   ColumnOrderings<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get username => $composableBuilder(
-      column: $table.username, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get filename => $composableBuilder(
+      column: $table.filename, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get author => $composableBuilder(
       column: $table.author, builder: (column) => ColumnOrderings(column));
@@ -390,8 +390,8 @@ class $$Bz_fileTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get username =>
-      $composableBuilder(column: $table.username, builder: (column) => column);
+  GeneratedColumn<String> get filename =>
+      $composableBuilder(column: $table.filename, builder: (column) => column);
 
   GeneratedColumn<String> get author =>
       $composableBuilder(column: $table.author, builder: (column) => column);
@@ -427,28 +427,28 @@ class $$Bz_fileTableTableManager extends RootTableManager<
               $$Bz_fileTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
-            Value<String> username = const Value.absent(),
+            Value<String> filename = const Value.absent(),
             Value<String> author = const Value.absent(),
             Value<DateTime> dateofCreate = const Value.absent(),
             Value<String> fill = const Value.absent(),
           }) =>
               Bz_fileCompanion(
             id: id,
-            username: username,
+            filename: filename,
             author: author,
             dateofCreate: dateofCreate,
             fill: fill,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
-            required String username,
+            required String filename,
             required String author,
             required DateTime dateofCreate,
             required String fill,
           }) =>
               Bz_fileCompanion.insert(
             id: id,
-            username: username,
+            filename: filename,
             author: author,
             dateofCreate: dateofCreate,
             fill: fill,

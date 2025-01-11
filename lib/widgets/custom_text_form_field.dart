@@ -21,7 +21,7 @@ class CustomTextFormField extends StatelessWidget {
           border: const OutlineInputBorder(), label: Text(_txtLable)),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return '{$_txtLable} name cannot be empty';
+          return '$_txtLable name cannot be empty';
         }
       },
     );

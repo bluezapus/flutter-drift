@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_drift/db/app_db.dart';
 import 'package:flutter_drift/widgets/custom_date_picker_form_field.dart';
 import 'package:flutter_drift/widgets/custom_text_form_field.dart';
 import 'package:intl/intl.dart';
+import 'package:drift/drift.dart' as drift;
 
 class AddFile extends StatefulWidget {
   const AddFile({super.key});
@@ -11,11 +13,20 @@ class AddFile extends StatefulWidget {
 }
 
 class _AddFileState extends State<AddFile> {
+  late AppDb _db;
   final TextEditingController _fileNameController = TextEditingController();
   final TextEditingController _authorNameController = TextEditingController();
   final TextEditingController _dateCreastedController = TextEditingController();
   final TextEditingController _fillController = TextEditingController();
   DateTime? _dateofCreate;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _db = AppDb();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +36,37 @@ class _AddFileState extends State<AddFile> {
         actions: [
           IconButton(
             onPressed: () {
-              //TODO
+              final entity = Bz_fileCompanion(
+                filename: drift.Value(_fileNameController.text),
+                author: drift.Value(_authorNameController.text),
+                dateofCreate: drift.Value(_dateofCreate!),
+                fill: drift.Value(_fillController.text),
+              );
+
+              _db.insertFile(entity).then(
+                    (value) => ScaffoldMessenger.of(context).showMaterialBanner(
+                      MaterialBanner(
+                        backgroundColor: Colors.blue,
+                        content: Text(
+                          'New File inserted: $value',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                              onPressed: () => ScaffoldMessenger.of(context)
+                                  .hideCurrentMaterialBanner(),
+                              child: const Text(
+                                'Close',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ))
+                        ],
+                      ),
+                    ),
+                  );
             },
             icon: Icon(
               Icons.save,
