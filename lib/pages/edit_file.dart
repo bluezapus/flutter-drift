@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_drift/db/app_db.dart';
 import 'package:flutter_drift/widgets/custom_date_picker_form_field.dart';
@@ -5,15 +7,17 @@ import 'package:flutter_drift/widgets/custom_text_form_field.dart';
 import 'package:intl/intl.dart';
 import 'package:drift/drift.dart' as drift;
 
-class AddFile extends StatefulWidget {
-  const AddFile({super.key});
+class EditFile extends StatefulWidget {
+  final int id;
+  const EditFile({super.key, required this.id});
 
   @override
-  State<AddFile> createState() => _AddFileState();
+  State<EditFile> createState() => _EditFileState();
 }
 
-class _AddFileState extends State<AddFile> {
+class _EditFileState extends State<EditFile> {
   late AppDb _db;
+  late Bz_fileData _bz_fileData;
   final TextEditingController _fileNameController = TextEditingController();
   final TextEditingController _authorNameController = TextEditingController();
   final TextEditingController _dateCreastedController = TextEditingController();
@@ -23,8 +27,8 @@ class _AddFileState extends State<AddFile> {
   @override
   void initState() {
     super.initState();
-
     _db = AppDb();
+    getBz_file();
   }
 
   @override
@@ -41,17 +45,24 @@ class _AddFileState extends State<AddFile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add File'),
+        title: Text('Edit File'),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              AddFile();
+              EditFile();
             },
             icon: Icon(
               Icons.save,
             ),
           ),
+          IconButton(
+              onPressed: () {
+                deleteFile();
+              },
+              icon: const Icon(
+                Icons.delete,
+              ))
         ],
       ),
       body: Column(
@@ -123,20 +134,21 @@ class _AddFileState extends State<AddFile> {
     });
   }
 
-  void AddFile() {
+  void EditFile() {
     final entity = Bz_fileCompanion(
+      id: drift.Value(widget.id),
       filename: drift.Value(_fileNameController.text),
       author: drift.Value(_authorNameController.text),
       dateofCreate: drift.Value(_dateofCreate!),
       fill: drift.Value(_fillController.text),
     );
 
-    _db.insertFile(entity).then(
+    _db.updateFile(entity).then(
           (value) => ScaffoldMessenger.of(context).showMaterialBanner(
             MaterialBanner(
               backgroundColor: Colors.blue,
               content: Text(
-                'New File inserted: $value',
+                'File Update: $value',
                 style: TextStyle(
                   color: Colors.white,
                 ),
@@ -155,5 +167,40 @@ class _AddFileState extends State<AddFile> {
             ),
           ),
         );
+  }
+
+  void deleteFile() {
+    _db.deleteFile(widget.id).then(
+          (value) => ScaffoldMessenger.of(context).showMaterialBanner(
+            MaterialBanner(
+              backgroundColor: Colors.blue,
+              content: Text(
+                'File delete: $value',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => ScaffoldMessenger.of(context)
+                        .hideCurrentMaterialBanner(),
+                    child: const Text(
+                      'Close',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ))
+              ],
+            ),
+          ),
+        );
+  }
+
+  Future<void> getBz_file() async {
+    _bz_fileData = await _db.getFile(widget.id);
+    _fileNameController.text = _bz_fileData.filename;
+    _authorNameController.text = _bz_fileData.author;
+    _dateCreastedController.text = _bz_fileData.dateofCreate.toIso8601String();
+    _fillController.text = _bz_fileData.fill;
   }
 }

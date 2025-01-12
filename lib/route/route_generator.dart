@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_drift/pages/add_file.dart';
+import 'package:flutter_drift/pages/edit_file.dart';
 import 'package:flutter_drift/pages/home_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    final args = settings.arguments;
+
     switch (settings.name) {
-      case '/':
+      case '/': //Home Page
         return MaterialPageRoute(builder: (_) => const HomePage());
-      case '/add_file':
+      case '/add_file': //Add File Page
         return MaterialPageRoute(builder: (_) => AddFile());
+      case '/edit_file': //Add File Page
+        if (args is int) {
+          return MaterialPageRoute(builder: (_) => EditFile(id: args));
+        }
+        return _errorRoute();
+
       default:
         return _errorRoute();
     }
